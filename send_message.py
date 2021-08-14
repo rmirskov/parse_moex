@@ -15,7 +15,7 @@ def say_string(num):
         return f'{string}и'
     return string
 
-def send_mail(subject, text, mail_to, files, isTls=True):
+def send_mail(subject, text, mail_to, file, isTls=True):
     msg = MIMEMultipart()
     msg['From'] = settings.mail_from
     msg['To'] = settings.mail_to
@@ -24,9 +24,10 @@ def send_mail(subject, text, mail_to, files, isTls=True):
     msg.attach(MIMEText(text))
 
     part = MIMEBase('application', "octet-stream")
-    part.set_payload(open(files, "rb").read())
+    with open(file, "rb") as f:
+        part.set_payload(f.read())
     encoders.encode_base64(part)
-    part.add_header('Content-Disposition', 'attachment; filename="WorkBook3.xlsx"')
+    part.add_header('Content-Disposition', 'attachment; filename="{}"'.format(settings.file_name))
     msg.attach(part)
 
     smtp = smtplib.SMTP(settings.server, settings.port)

@@ -57,7 +57,6 @@ try:
         df = pd.DataFrame(data_list)
         df.columns = [f'Дата {pair}', f'Курс ПК {pair}', f'Время ПК {pair}', f'Курс ОК {pair}', f'Время ОК {pair}']
         df = df.astype({f'Курс ПК {pair}': 'float64', f'Курс ОК {pair}': 'float64'})
-        df[f'Дата {pair}'] = pd.to_datetime(df[f'Дата {pair}']).dt.date
         df[f'Изменение {pair}'] = df[f'Курс ОК {pair}'] - df[f'Курс ПК {pair}']
         df_dict[pair] = df[[f'Дата {pair}', f'Курс ОК {pair}', f'Изменение {pair}']]
 
@@ -67,7 +66,7 @@ try:
         name = result_data.columns[i-1].split(' ')[1].split('_')[0]
         result_data[f'Курс {name}_USD'] = result_data.iloc[:, i] / result_data.iloc[:, 1]
     sheet_name = time.ctime().replace(':', '-')
-    file_name = 'data_sheet.xlsx'
+    file_name = settings.file_name
     with pd.ExcelWriter(file_name, engine='openpyxl', date_format='dd.mm.yyyy') as writer:
         result_data.to_excel(writer, sheet_name=sheet_name, index=False, float_format="%.4f")
 
